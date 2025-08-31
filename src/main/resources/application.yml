@@ -2,6 +2,8 @@ spring:
   application:
     name: springai
   ai:
+    model:
+      chat: ollama
     openai:
       api-key: ${OPENAI_API_KEY}
       chat:
@@ -9,4 +11,11 @@ spring:
           model: openai/gpt-4.1-nano
         base-url: https://models.github.ai/inference
         completions-path: /chat/completions
+    ollama:
+      chat:
+        options:
+          model: hf.co/rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF
+      init:
+        pull-model-strategy: when_missing # ??? ?? ? ????
+
 
