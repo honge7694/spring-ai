@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: springai
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: openai/gpt-4.1-nano
+        base-url: https://models.github.ai/inference
+        completions-path: /chat/completions
+
