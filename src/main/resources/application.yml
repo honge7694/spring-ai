@@ -16,6 +16,9 @@ spring:
         options:
           model: hf.co/rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF
       init:
-        pull-model-strategy: when_missing # ??? ?? ? ????
+        pull-model-strategy: when_missing # 실행 모델이 존재하지 않으면 모델 설치
+
+logging:
+  level.org.springframework.ai.chat.client.advisor=DEBUG
 
 
