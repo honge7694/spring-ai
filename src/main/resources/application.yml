@@ -1,6 +1,7 @@
 spring:
   application:
     name: springai
+    cli: true # CLI CHAT BOT 실행 Config.CommandLineRunner
   ai:
     model:
       chat: ollama
