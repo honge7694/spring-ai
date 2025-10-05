@@ -1,4 +1,4 @@
-package kr.hui.springai.rest;
+package kr.hui.springai.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;

@@ -1,7 +1,7 @@
 spring:
   application:
     name: springai
-    cli: true # CLI CHAT BOT 실행 Config.CommandLineRunner
+    cli: false # CLI CHAT BOT 실행 Config.CommandLineRunner
   ai:
     model:
       chat: ollama
@@ -20,6 +20,7 @@ spring:
         pull-model-strategy: when_missing # 실행 모델이 존재하지 않으면 모델 설치
 
 logging:
-  level.org.springframework.ai.chat.client.advisor=DEBUG
+  level:
+    org.springframework.ai.chat.client.advisor: DEBUG
 
 
