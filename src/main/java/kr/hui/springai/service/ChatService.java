@@ -9,6 +9,8 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class ChatService {
@@ -37,4 +39,13 @@ public class ChatService {
     public ChatResponse call(Prompt prompt, String conversationId) {
         return buildChatClientRequestSpec(prompt, conversationId).call().chatResponse();
     }
+
+    public enum Emotion { VERY_NEGATIVE, NEGATIVE, NEUTRAL, POSITIVE, VERY_POSITIVE }
+
+    public record EmotionEvaluation(Emotion emotion, List<String> reason) { }
+
+    public EmotionEvaluation callEmotionEvaluation(Prompt prompt, String conversationId) {
+        return buildChatClientRequestSpec(prompt, conversationId).call().entity(EmotionEvaluation.class);
+    }
+
 }

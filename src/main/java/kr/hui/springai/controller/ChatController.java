@@ -55,4 +55,9 @@ public class ChatController {
         Optional.ofNullable(promptBody.chatOptions()).ifPresent(promptBuilder::chatOptions);
         return promptBuilder.build();
     }
+
+    @PostMapping(value = "/emotion", produces = MediaType.APPLICATION_JSON_VALUE)
+    ChatService.EmotionEvaluation emotion(@RequestBody @Valid PromptBody promptBody) {
+        return chatService.callEmotionEvaluation(buildPrompt(promptBody), promptBody.conversationId());
+    }
 }

@@ -4,7 +4,7 @@ spring:
     cli: false # CLI CHAT BOT 실행 Config.CommandLineRunner
   ai:
     model:
-      chat: ollama
+      chat: openai # ollama
     openai:
       api-key: ${OPENAI_API_KEY}
       chat:
