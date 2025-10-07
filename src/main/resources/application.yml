@@ -4,9 +4,13 @@ spring:
     cli: false # CLI CHAT BOT 실행 Config.CommandLineRunner
   ai:
     model:
-      chat: openai # ollama
+      chat: ollama # openai
+      embedding: ollama
     openai:
       api-key: ${OPENAI_API_KEY}
+      embedding:
+        options:
+          model: bge-m3
       chat:
         options:
           model: openai/gpt-4.1-nano
@@ -22,5 +26,9 @@ spring:
 logging:
   level:
     org.springframework.ai.chat.client.advisor: DEBUG
+
+app:
+  rag:
+    documents-location-pattern: classpath:spring-ai.pdf
 
 

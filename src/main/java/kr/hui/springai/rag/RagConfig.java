@@ -1,0 +1,75 @@
+package kr.hui.springai.rag;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.document.DocumentReader;
+import org.springframework.ai.document.DocumentTransformer;
+import org.springframework.ai.document.DocumentWriter;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.model.transformer.KeywordMetadataEnricher;
+import org.springframework.ai.reader.tika.TikaDocumentReader;
+import org.springframework.ai.vectorstore.SimpleVectorStore;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
+import java.io.IOException;
+import java.util.Arrays;
+
+@Configuration
+public class RagConfig {
+
+    @Bean
+    public DocumentReader[] documentReaders(@Value("classpath:spring-ai.pdf") String documentsLocationPattern) throws IOException {
+        Resource[] resources = new PathMatchingResourcePatternResolver().getResources(documentsLocationPattern);
+        return Arrays.stream(resources).map(TikaDocumentReader::new).toArray(DocumentReader[]::new);
+    }
+
+    @Bean
+    public DocumentTransformer textSplitter() {
+        return new LengthTextSplitter(200, 100); // TIP: 여러가지 값을 주며 테스트필요.
+    }
+
+    @Bean
+    public DocumentTransformer keywordMetadataEnricher(ChatModel chatModel) {
+        return new KeywordMetadataEnricher(chatModel, 4);
+    }
+
+    @Bean
+    public DocumentWriter jsonConsoleDocumentWriter(ObjectMapper objectMapper) {
+        return documents -> {
+            System.out.println("[INFO] Writing Json console document...");
+            try {
+                System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(documents));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("=======================================");
+        };
+    }
+
+    @Bean
+    public DocumentWriter vectorStore(EmbeddingModel embeddingModel) {
+        return SimpleVectorStore.builder(embeddingModel).build();
+    }
+
+    @Order(1)
+    @Bean
+    public ApplicationRunner initEtlPipeLine(DocumentReader[] documentReaders,
+                                             DocumentTransformer textSplitter,
+                                             DocumentTransformer keywordMetadataEnricher,
+                                             DocumentWriter[] documentWriters) {
+        return args -> {
+            Arrays.stream(documentReaders).map(DocumentReader::read) // 문서를 읽음 (Extract)
+                    .map(textSplitter) // chunkData로 자름 (Transform)
+                    .map(keywordMetadataEnricher) // chunkData를 keyword를 Metadata를 채운 후
+                    .forEach(documents -> Arrays.stream(documentWriters) // vectorStore 저장 (Load)
+                            .forEach(documentWriter -> documentWriter.write(documents)));
+        };
+    }
+}
