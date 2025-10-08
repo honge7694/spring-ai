@@ -1,7 +1,6 @@
 spring:
   application:
     name: springai
-    cli: false # CLI CHAT BOT 실행 Config.CommandLineRunner
   ai:
     model:
       chat: ollama # openai
@@ -30,5 +29,8 @@ logging:
 app:
   rag:
     documents-location-pattern: classpath:spring-ai.pdf
+  cli:
+    enabled: true # CLI CHAT BOT 실행 Config.CommandLineRunner
+#    filter-expression:
 
 
