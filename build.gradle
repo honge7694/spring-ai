@@ -28,6 +28,8 @@ dependencies {
     implementation 'org.springframework.ai:spring-ai-starter-model-openai'
     // vector db
     implementation 'org.springframework.ai:spring-ai-vector-store'
+    implementation 'org.springframework.ai:spring-ai-starter-vector-store-elasticsearch'
+    implementation 'org.springframework.ai:spring-ai-elasticsearch-store'
     // document-reader
     implementation 'org.springframework.ai:spring-ai-tika-document-reader'
     // RAG

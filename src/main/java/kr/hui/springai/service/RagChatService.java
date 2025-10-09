@@ -34,8 +34,7 @@ public class RagChatService {
                 .advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID, conversationId));
         filterExpressionAsOpt.ifPresent(filterExpression -> chatClientRequestSpec.advisors(advisorSpec ->
                 advisorSpec.param(VectorStoreDocumentRetriever.FILTER_EXPRESSION, filterExpression)));
-        return chatClient.prompt(prompt)
-                .advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID, conversationId));
+        return chatClientRequestSpec;
     }
 
     public ChatResponse call(Prompt prompt, String conversationId, Optional<String> filterExpressionAsOpt) {

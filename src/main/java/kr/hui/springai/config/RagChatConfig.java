@@ -49,6 +49,7 @@ public class RagChatConfig {
                                  RagChatService ragChatService,
                                  @Value("${app.cli.filter-expression:}") String filterExpression) {
         return args -> {
+            // 주석을 해제하면 에러가 발생하는 부분을 찾을 수 있음.
             LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
             context.getLogger("ROOT").detachAppender("CONSOLE");
 

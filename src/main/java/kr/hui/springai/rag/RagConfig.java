@@ -64,11 +64,13 @@ public class RagConfig {
         };
     }
 
+    @ConditionalOnProperty(prefix = "app.vectorstore.in-memory", name = "enabled", havingValue = "true")
     @Bean
     public VectorStore vectorStore(EmbeddingModel embeddingModel) {
         return SimpleVectorStore.builder(embeddingModel).build();
     }
 
+    @ConditionalOnProperty(prefix = "app.etl.pipeline", name = "init", havingValue = "true")
     @Order(1)
     @Bean
     public ApplicationRunner initEtlPipeLine(DocumentReader[] documentReaders,

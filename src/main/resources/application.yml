@@ -16,11 +16,25 @@ spring:
         base-url: https://models.github.ai/inference
         completions-path: /chat/completions
     ollama:
+      embedding:
+        options:
+          model: bge-m3
       chat:
         options:
           model: hf.co/rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF
       init:
         pull-model-strategy: when_missing # 실행 모델이 존재하지 않으면 모델 설치
+    vectorstore:
+      elasticsearch:
+        initialize-schema: true
+        index-name: spring-ai-document-index
+        dimensions: 1024
+        similarity: cosine
+  # elastic-search
+  elasticsearch:
+    urls: http://localhost:9200
+#    username:
+#    password:
 
 logging:
   level:
@@ -30,7 +44,14 @@ app:
   rag:
     documents-location-pattern: classpath:spring-ai.pdf
   cli:
-    enabled: false # CLI CHAT BOT 실행 Config.CommandLineRunner
+    enabled: true # CLI CHAT BOT 실행 Config.CommandLineRunner
 #    filter-expression:
+  # 상용 VectorStore 사용하기위해 추가
+  vectorstore:
+    in-memory:
+      enabled: false
+  etl:
+    pipeline:
+      init: false # 상용 VectorStore를 사용할 때 처음에는 true, 2번째 실행부터는 false
 
 
