@@ -3,7 +3,7 @@ spring:
     name: springai
   ai:
     model:
-      chat: ollama # openai
+      chat: openai #ollama # 여러 Chat 모델 사용시 auto-configurations에서 사용할 모델 설정 필요 (예: openai, ollama)
       embedding: ollama
     openai:
       api-key: ${OPENAI_API_KEY}
@@ -13,12 +13,12 @@ spring:
       chat:
         options:
           model: openai/gpt-4.1-nano
-        base-url: https://models.github.ai/inference
-        completions-path: /chat/completions
+        base-url: https://models.github.ai/inference # 설정하지 않으면 기본 OpenAI api 호출 주소 사용
+        completions-path: /chat/completions # OpenAI 기본값은 /v1/chat/completions, 현재는 github 모델 사용 주소
     ollama:
       embedding:
         options:
-          model: bge-m3
+          model: mistral # bge-m3 # Structured Output, Tool Callling 사용시 mistrol(7B, q4 기본 모델로 약 7GB 메모리 필요) 사용
       chat:
         options:
           model: hf.co/rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF
@@ -38,13 +38,19 @@ spring:
 
 logging:
   level:
-    org.springframework.ai.chat.client.advisor: DEBUG
+    org:
+      springframework:
+        ai:
+          chat.client.advisor: DEBUG # SimpleLoggerAdvisor 등의 Advisor에서 DEBUG 로그 출력
+          tool: DEBUG # TOOL 사용 관련 DEBUG
 
 app:
   rag:
     documents-location-pattern: classpath:spring-ai.pdf
   cli:
     enabled: true # CLI CHAT BOT 실행 Config.CommandLineRunner
+  chat:
+    default-system-prompt: 한국어를 사용하는 tool 지원 AI 입니다. # TOOL CALLING에서 사용
 #    filter-expression:
   # 상용 VectorStore 사용하기위해 추가
   vectorstore:
