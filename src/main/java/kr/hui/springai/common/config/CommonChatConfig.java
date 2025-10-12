@@ -1,7 +1,7 @@
-package kr.hui.springai.config;
+package kr.hui.springai.common.config;
 
 import ch.qos.logback.classic.LoggerContext;
-import kr.hui.springai.service.RagChatService;
+import kr.hui.springai.rag.service.RagChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -24,7 +24,7 @@ import java.util.Scanner;
  */
 @Slf4j
 @Configuration
-public class RagChatConfig {
+public class CommonChatConfig {
 
     /**
      * ChatClient 요청과 응답을 로깅하는 간단한 어드바이저(Advisor) Bean을 생성합니다.
@@ -60,46 +60,5 @@ public class RagChatConfig {
     @Bean
     public MessageChatMemoryAdvisor messageChatMemoryAdvisor(ChatMemory chatMemory) {
         return MessageChatMemoryAdvisor.builder(chatMemory).build();
-    }
-
-    /**
-     * 애플리케이션 시작 시 대화형 CLI 챗봇을 실행하는 CommandLineRunner Bean을 생성합니다.
-     * 'app.cli.enabled=true'일 때만 활성화됩니다.
-     * 이 Runner는 사용자로부터 입력을 받고, RagChatService를 통해 응답을 스트리밍하여 콘솔에 출력하는
-     * 무한 루프를 실행합니다.
-     *
-     * @param applicationName 애플리케이션 이름
-     * @param ragChatService RAG 챗 서비스를 제공하는 서비스
-     * @param filterExpression RAG 검색 시 사용할 메타데이터 필터 표현식
-     * @return CommandLineRunner 인스턴스
-     */
-    @ConditionalOnProperty(prefix = "app.cli", name = "enabled", havingValue = "true")
-    @Bean
-    public CommandLineRunner cli(@Value("${spring.application.name}") String applicationName,
-                                 RagChatService ragChatService,
-                                 @Value("${app.cli.filter-expression:}") String filterExpression) {
-        return args -> {
-            // 아래 코드를 주석하면 Elasticsearch 등 외부 시스템 연동 시 발생하는 상세 에러를 확인할 수 있습니다.
-            LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-            context.getLogger("ROOT").detachAppender("CONSOLE");
-
-            System.out.println("\n" + applicationName + " CLI CHAT BOT");
-
-            try (Scanner scanner = new Scanner(System.in)) {
-                while (true) {
-                    System.out.print("\nUser: ");
-                    String userMessage = scanner.nextLine();
-                    ragChatService.stream(Prompt.builder().content(userMessage).build(),
-                                    "cli",
-                                    // filterExpression이 비어 있을 경우에만 Optional 값을 채워 전달하려는 의도의 코드
-                                    Optional.ofNullable(filterExpression).filter(String::isBlank))
-                            .doFirst(() -> System.out.print("\nAssistant: "))
-                            .doOnNext(System.out::print)
-                            .doOnComplete(System.out::println)
-                            // 스트림이 완료(complete) 신호를 보낼 때까지 현재 스레드를 차단(block)합니다.
-                            .blockLast();
-                }
-            }
-        };
     }
 }
