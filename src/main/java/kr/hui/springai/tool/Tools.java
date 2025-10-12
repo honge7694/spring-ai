@@ -17,7 +17,7 @@ public class Tools {
         this.webClient = webClientBuilder.build();
     }
 
-    @Tool(name = "getWeather", description = "지역 이름을 받아서 날씨를 조회합니다.")
+    @Tool(name = "getWeather", description = "지역 이름을 받아서 날씨를 조회합니다.", returnDirect = true)
     public String getWeather(@ToolParam(description = "지역 이름") String location) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.scheme("https")
