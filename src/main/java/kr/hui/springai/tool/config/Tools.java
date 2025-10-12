@@ -1,4 +1,4 @@
-package kr.hui.springai.tool;
+package kr.hui.springai.tool.config;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.ai.tool.annotation.Tool;
@@ -30,14 +30,14 @@ public class Tools {
                 .bodyToMono(String.class).block();
     }
 
-    @Tool(description = "지역 이름을 받아서 현재 3일간의 날씨와 천문 정보 (달의 위상과 밝기 그리고 해와 달의 뜨고 지는 시각)를 조회합니다.")
+    @Tool(description = "지역 이름을 받아서 3일간의 날씨와 천문 정보 (달의 위상과 밝기 그리고 해와 달의 뜨고 지는 시각)를 조회합니다.")
     public WeatherResponse getWeatherDetails(@ToolParam(description = "지역 이름") String location) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.scheme("https")
                         .host("wttr.in")
                         .path(location.replace(" ", "+"))
                         .queryParam("lang", "ko")
-                        .queryParam("format", "jl") // json 타입
+                        .queryParam("format", "j1") // json 타입
                         .build())
                 .retrieve()
                 .bodyToMono(WeatherResponse.class).block();

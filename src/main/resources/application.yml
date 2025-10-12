@@ -16,12 +16,10 @@ spring:
         base-url: https://models.github.ai/inference # 설정하지 않으면 기본 OpenAI api 호출 주소 사용
         completions-path: /chat/completions # OpenAI 기본값은 /v1/chat/completions, 현재는 github 모델 사용 주소
     ollama:
-      embedding:
-        options:
-          model: mistral # bge-m3 # Structured Output, Tool Callling 사용시 mistrol(7B, q4 기본 모델로 약 7GB 메모리 필요) 사용
       chat:
         options:
-          model: hf.co/rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF
+          model: mistral # bge-m3 # Structured Output, Tool Callling 사용시 mistrol(7B, q4 기본 모델로 약 7GB 메모리 필요) 사용
+#          model: hf.co/rippertnt/HyperCLOVAX-SEED-Text-Instruct-1.5B-Q4_K_M-GGUF
       init:
         pull-model-strategy: when_missing # 실행 모델이 존재하지 않으면 모델 설치
     vectorstore:
@@ -48,9 +46,12 @@ app:
   rag:
     documents-location-pattern: classpath:spring-ai.pdf
   cli:
-    enabled: true # CLI CHAT BOT 실행 Config.CommandLineRunner
+    enabled: false # CLI CHAT BOT 실행 Config.CommandLineRunner
   chat:
     default-system-prompt: 한국어를 사용하는 tool 지원 AI 입니다. # TOOL CALLING에서 사용
+  tool:
+    cli:
+      enabled: false # TOOL CALLING CLI CHAT BOT 실행
 #    filter-expression:
   # 상용 VectorStore 사용하기위해 추가
   vectorstore:
