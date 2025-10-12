@@ -1,4 +1,4 @@
-package kr.hui.springai.service;
+package kr.hui.springai.rag.service;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.api.Advisor;

@@ -1,4 +1,4 @@
-package kr.hui.springai.service;
+package kr.hui.springai.chat.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
